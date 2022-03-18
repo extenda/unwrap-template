@@ -21,27 +21,27 @@ testSuite(
       await rm("hello.txt");
       chdir("..");
     }
-  },
-
-  async function testTemplateRepoInit() {
-    try {
-      await exec(`docker build . -t ${IMAGE_NAME}`);
-
-      await mkdir("test/meta-test");
-      chdir("test/meta-test");
-
-      await exec(`docker run -v $PWD:/data -e INIT=true ${IMAGE_NAME}`);
-
-      assert.ok((await lstat(".template/files/README.md")).isFile());
-      assert.ok((await lstat(".template/options.json")).isFile());
-      assert.ok((await lstat(".template/README.md")).isFile());
-      assert.ok((await lstat(".template/init.sh")).isFile());
-      assert.ok((await lstat("README.md")).isSymbolicLink());
-    } finally {
-      chdir("../..");
-      await rm("test/meta-test", { recursive: true });
-    }
   }
+
+  // async function testTemplateRepoInit() {
+  //   try {
+  //     await exec(`docker build . -t ${IMAGE_NAME}`);
+
+  //     await mkdir("test/meta-test");
+  //     chdir("test/meta-test");
+
+  //     await exec(`docker run -v $PWD:/data -e INIT=true ${IMAGE_NAME}`);
+
+  //     assert.ok((await lstat(".template/files/README.md")).isFile());
+  //     assert.ok((await lstat(".template/options.json")).isFile());
+  //     assert.ok((await lstat(".template/README.md")).isFile());
+  //     assert.ok((await lstat(".template/init.sh")).isFile());
+  //     assert.ok((await lstat("README.md")).isSymbolicLink());
+  //   } finally {
+  //     chdir("../..");
+  //     await rm("test/meta-test", { recursive: true });
+  //   }
+  // }
 );
 
 async function testSuite(...tests) {
