@@ -6,6 +6,7 @@ const {
   writeFile,
   stat,
   cp,
+  symlink,
 } = require("node:fs/promises");
 const { dirname, join } = require("node:path");
 
@@ -27,16 +28,13 @@ async function main() {
 async function initTemplateRepository() {
   const metaDir = join(SELF_ROOT_DIR, "meta");
 
-  for await (const fileName of listFileNames(metaDir)) {
-    const inputFile = join(metaDir, fileName);
-    const outputFile = join(DATA_ROOT_DIR, fileName);
-
-    try {
-      await mkdir(dirname(outputFile), { recursive: true });
-    } catch (ignored) {}
-
-    await cp(inputFile, outputFile);
-  }
+  await copyFiles(metaDir, DATA_ROOT_DIR);
+  try {
+    await symlink(
+      join(process.env.DIR, ".template", "README.md"),
+      join(DATA_ROOT_DIR, "README.md")
+    );
+  } catch (ignored) {}
 }
 
 async function unwrapTemplate() {
@@ -53,7 +51,6 @@ async function unwrapTemplate() {
 }
 
 /**
- *
  * @param {string} inputDir
  * @param {string} outputDir
  * @param {Record<string, unknown>} options
@@ -71,6 +68,23 @@ async function copyAndTransform(inputDir, outputDir, options) {
     } catch (ignored) {}
 
     await writeFile(outputFile, transformedContent);
+  }
+}
+
+/**
+ * @param {string} inputDir
+ * @param {string} outputDir
+ */
+async function copyFiles(inputDir, outputDir) {
+  for await (const fileName of listFileNames(inputDir)) {
+    const inputFile = join(inputDir, fileName);
+    const outputFile = join(outputDir, fileName);
+
+    try {
+      await mkdir(dirname(outputFile), { recursive: true });
+    } catch (ignored) {}
+
+    await cp(inputFile, outputFile);
   }
 }
 

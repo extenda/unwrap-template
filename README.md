@@ -9,7 +9,7 @@ Docker image for unwrapping template repositories using EJS
 1. Create a repository and run:
 
    ```bash
-   docker run -v $PWD:/data -e INIT=true extenda/unwrap-template
+   docker run -v $PWD:/data -e DIR=$PWD -e INIT=true extenda/unwrap-template
    ```
 
    This will create the following structrure:
@@ -44,4 +44,3 @@ Docker image for unwrapping template repositories using EJS
    Files from the `files` folder will be copied to the current working directory and transformed with EJS using `.template/options.json` as the input.
 
    For more info on transformation see [EJS docs](https://ejs.co/).
-
