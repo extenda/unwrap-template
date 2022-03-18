@@ -1,0 +1,46 @@
+name: Build and deploy to Docker Hub
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run tests
+        run: npm test
+
+  build-and-deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: extenda/actions/gcp-secret-manager@v0
+        with:
+          service-account-key: ${{ secrets.SECRET_AUTH }}
+          secrets: |
+            DOCKER_PASSWORD: dockerhub-password
+            DOCKER_USERNAME: dockerhub-username
+      
+      - name: Push to DockerHub
+        if: github.ref == 'refs/heads/master'
+        uses: extenda/actions/docker@v0
+        with:
+          image: extenda/unwrap-template
+          tag: latest
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}

@@ -1,0 +1,23 @@
+{
+  "name": "unwrap-template",
+  "version": "1.0.0",
+  "description": "Template unwrapper using EJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/extenda/unwrap-template.git"
+  },
+  "keywords": [],
+  "author": "extenda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/extenda/unwrap-template/issues"
+  },
+  "homepage": "https://github.com/extenda/unwrap-template#readme",
+  "dependencies": {
+    "ejs": "^3.1.6"
+  }
+}
