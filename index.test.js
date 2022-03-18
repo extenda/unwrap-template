@@ -8,6 +8,8 @@ testTemplateUnwrapping();
 
 async function testTemplateUnwrapping() {
   try {
+    await exec("docker build . -t extenda/unwrap-template");
+
     chdir("test");
     await exec("bash .template/init.sh");
 
