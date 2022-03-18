@@ -15,10 +15,7 @@ const DATA_ROOT_DIR = "/data";
 main();
 
 async function main() {
-  console.log("hello there ");
   await executeAsUser();
-
-  console.log(process.env);
 
   if (process.env.INIT === "true") {
     return initTemplateRepository();
@@ -28,8 +25,6 @@ async function main() {
 }
 
 async function initTemplateRepository() {
-  console.log("Initializing template repo");
-
   const metaDir = join(SELF_ROOT_DIR, "meta");
 
   for await (const fileName of listFileNames(metaDir)) {
