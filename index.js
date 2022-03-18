@@ -5,21 +5,50 @@ const {
   readFile,
   writeFile,
   stat,
+  cp,
 } = require("node:fs/promises");
 const { dirname, join } = require("node:path");
 
-unwrapTemplate();
+const SELF_ROOT_DIR = "/app";
+const DATA_ROOT_DIR = "/data";
+
+main();
+
+async function main() {
+  console.log("hello there ");
+  await executeAsUser();
+
+  console.log(process.env);
+
+  if (process.env.INIT === "true") {
+    return initTemplateRepository();
+  }
+
+  await unwrapTemplate();
+}
+
+async function initTemplateRepository() {
+  console.log("Initializing template repo");
+
+  const metaDir = join(SELF_ROOT_DIR, "meta");
+
+  for await (const fileName of listFileNames(metaDir)) {
+    const inputFile = join(metaDir, fileName);
+    const outputFile = join(DATA_ROOT_DIR, fileName);
+
+    try {
+      await mkdir(dirname(outputFile), { recursive: true });
+    } catch (ignored) {}
+
+    await cp(inputFile, outputFile);
+  }
+}
 
 async function unwrapTemplate() {
-  const rootDir = "/data";
-  const templateDir = join(rootDir, ".template");
+  const templateDir = join(DATA_ROOT_DIR, ".template");
   const templateFilesDir = join(templateDir, "files");
   const optionsFile = join(templateDir, "options.json");
-  const outputPath = rootDir;
-
-  const { gid, uid } = await stat(rootDir);
-  process.setgid(gid);
-  process.setuid(uid);
+  const outputPath = DATA_ROOT_DIR;
 
   const options = JSON.parse(
     await readFile(optionsFile, { encoding: "utf-8" })
@@ -68,4 +97,10 @@ async function* listFileNames(absoluteDir, relativeDir = "") {
       yield join(relativeDir, direntName);
     }
   }
+}
+
+async function executeAsUser() {
+  const { gid, uid } = await stat(DATA_ROOT_DIR);
+  process.setgid(gid);
+  process.setuid(uid);
 }
