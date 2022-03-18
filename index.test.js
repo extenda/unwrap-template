@@ -45,12 +45,12 @@ testSuite(
 
 async function testSuite(...tests) {
   for (const test of tests) {
-    process.stdin.write(`${test.name}: `);
+    process.stdout.write(`${test.name}: `);
     try {
       await test();
-      process.stdin.write(`OK\n`);
+      process.stdout.write(`OK\n`);
     } catch (error) {
-      process.stdin.write(`FAIL\n`);
+      process.stdout.write(`FAIL\n`);
       throw error;
     }
   }
