@@ -68,7 +68,10 @@ async function copyAndTransform(inputDir, outputDir, options) {
       await mkdir(dirname(outputFile), { recursive: true });
     } catch (ignored) {}
 
-    await unlink(outputFile);
+    try {
+      await unlink(outputFile);
+    } catch (ignored) {}
+
     await writeFile(outputFile, transformedContent);
   }
 }
