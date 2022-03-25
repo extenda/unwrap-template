@@ -7,6 +7,7 @@ const {
   stat,
   cp,
   symlink,
+  unlink,
 } = require("node:fs/promises");
 const { dirname, join } = require("node:path");
 
@@ -67,6 +68,7 @@ async function copyAndTransform(inputDir, outputDir, options) {
       await mkdir(dirname(outputFile), { recursive: true });
     } catch (ignored) {}
 
+    await unlink(outputFile);
     await writeFile(outputFile, transformedContent);
   }
 }
